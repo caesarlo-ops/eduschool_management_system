@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}School Management System{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<!-- Mobile Toggle -->
+<button class="mobile-toggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div>
+      <div class="sidebar-title">EduManage</div>
+      <div class="sidebar-subtitle">School System</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main Menu</div>
+    <div class="nav-items">
+      <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == '/dashboard/' %}active{% endif %}">
+        <i class="fas fa-th-large"></i>
+        <span>Dashboard</span>
+      </a>
+      <a href="{% url 'students' %}" class="nav-link {% if request.path == '/students/' %}active{% endif %}">
+        <i class="fas fa-user-graduate"></i>
+        <span>Students</span>
+      </a>
+      <a href="{% url 'attendance' %}" class="nav-link {% if request.path == '/attendance/' %}active{% endif %}">
+        <i class="fas fa-clipboard-check"></i>
+        <span>Attendance</span>
+      </a>
+    </div>
+    
+    <div class="nav-section">Finance</div>
+    <div class="nav-items">
+      <a href="{% url 'fees' %}" class="nav-link {% if request.path == '/fees/' %}active{% endif %}">
+        <i class="fas fa-money-bill-wave"></i>
+        <span>Fees</span>
+      </a>
+      <a href="{% url 'receipts' %}" class="nav-link {% if request.path == '/receipts/' %}active{% endif %}">
+        <i class="fas fa-file-invoice"></i>
+        <span>Receipts</span>
+      </a>
+      <a href="{% url 'payroll' %}" class="nav-link {% if request.path == '/payroll/' %}active{% endif %}">
+        <i class="fas fa-wallet"></i>
+        <span>Payroll</span>
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
+      </button>
+    </form>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main">
+  <!-- Messages -->
+  {% if messages %}
+    <div class="messages" style="margin-bottom: 1rem;">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}" style="
+          padding: 1rem;
+          border-radius: var(--radius);
+          margin-bottom: 0.5rem;
+          {% if message.tags == 'success' %}background: var(--success-light); color: var(--success);{% endif %}
+          {% if message.tags == 'error' %}background: var(--danger-light); color: var(--danger);{% endif %}
+          {% if message.tags == 'warning' %}background: var(--warning-light); color: var(--warning);{% endif %}
+          {% if message.tags == 'info' %}background: var(--info-light); color: var(--info);{% endif %}
+        ">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script>
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.querySelector('.sidebar-overlay');
+  if (sidebar) sidebar.classList.toggle('open');
+  if (overlay) overlay.classList.toggle('active');
+}
+</script>
+
+{% else %}
+  {% block auth_content %}{% endblock %}
+{% endif %}
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

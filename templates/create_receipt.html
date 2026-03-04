@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Create Receipt - School Management System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Create Receipt</h1>
+    <p class="page-subtitle">Record a new payment receipt</p>
+  </div>
+  <a href="{% url 'receipts' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i>
+    Back to Receipts
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">
+      <i class="fas fa-file-invoice"></i>
+      Receipt Details
+    </h2>
+  </div>
+  <div class="card-body">
+    <form method="post" id="receiptForm">
+      {% csrf_token %}
+      
+      <!-- Receipt Info -->
+      <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); margin-bottom: 2rem;">
+        <div class="form-group">
+          <label class="form-label">Receipt Number</label>
+          {{ form.receipt_number }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Student</label>
+          {{ form.student }}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          {{ form.date }}
+        </div>
+      </div>
+
+      <!-- Receipt Items -->
+      <h3 style="margin-bottom: 1rem; color: var(--text-primary);">
+        <i class="fas fa-list"></i>
+        Receipt Items
+      </h3>
+      
+      <div id="items-container">
+        {{ formset.management_form }}
+        {% for item_form in formset %}
+        <div class="receipt-item" style="background: var(--bg-secondary); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+          <div class="form-grid" style="grid-template-columns: 2fr 1fr auto; gap: 1rem; align-items: end;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Description</label>
+              {{ item_form.description }}
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Amount ($)</label>
+              {{ item_form.amount }}
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              {% if item_form.instance.pk %}
+              <label class="form-label" style="display: flex; align-items: center; gap: 0.5rem;">
+                {{ item_form.DELETE }} Delete
+              </label>
+              {% endif %}
+            </div>
+          </div>
+          {% if item_form.errors %}
+          <div style="color: var(--danger); margin-top: 0.5rem; font-size: 0.875rem;">
+            {{ item_form.errors }}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Total Display -->
+      <div style="background: var(--primary); color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; margin: 1.5rem 0; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 600;">Total Amount:</span>
+        <span id="total-amount" style="font-size: 1.5rem; font-weight: 700;">$0.00</span>
+      </div>
+
+      <!-- Submit Buttons -->
+      <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <a href="{% url 'receipts' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i>
+          Create Receipt
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Calculate total dynamically
+function calculateTotal() {
+  const amounts = document.querySelectorAll('input[name$="-amount"]');
+  let total = 0;
+  amounts.forEach(input => {
+    const val = parseFloat(input.value) || 0;
+    total += val;
+  });
+  document.getElementById('total-amount').textContent = '$' + total.toFixed(2);
+}
+
+// Add event listeners to all amount inputs
+document.querySelectorAll('input[name$="-amount"]').forEach(input => {
+  input.addEventListener('input', calculateTotal);
+});
+
+// Initial calculation
+calculateTotal();
+</script>
+{% endblock %}

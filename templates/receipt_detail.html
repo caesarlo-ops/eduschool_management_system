@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Receipt #{{ receipt.receipt_number }} - School Management System{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Receipt #{{ receipt.receipt_number }}</h1>
+    <p class="page-subtitle">View receipt details</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="{% url 'receipts' %}" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i>
+      Back
+    </a>
+    <button onclick="window.print()" class="btn btn-primary">
+      <i class="fas fa-print"></i>
+      Print
+    </button>
+  </div>
+</div>
+
+<div class="receipt-container" style="max-width: 800px; margin: 0 auto;">
+  <div class="card" style="border: 2px solid var(--border-color);">
+    <!-- Receipt Header -->
+    <div class="card-header" style="background: var(--primary); color: white; text-align: center; padding: 2rem;">
+      <div style="font-size: 2rem; margin-bottom: 0.5rem;">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+      <h2 style="margin: 0; font-size: 1.5rem;">EduManage School</h2>
+      <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Official Payment Receipt</p>
+    </div>
+    
+    <div class="card-body" style="padding: 2rem;">
+      <!-- Receipt Info -->
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">Receipt Number</p>
+          <p style="margin: 0.25rem 0 0 0; font-size: 1.25rem; font-weight: 700; color: var(--primary);">{{ receipt.receipt_number }}</p>
+        </div>
+        <div>
+          <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">Date</p>
+          <p style="margin: 0.25rem 0 0 0; font-size: 1.125rem; font-weight: 600;">{{ receipt.date }}</p>
+        </div>
+        <div>
+          <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">Student Name</p>
+          <p style="margin: 0.25rem 0 0 0; font-size: 1.125rem; font-weight: 600;">{{ receipt.student.name }}</p>
+        </div>
+        <div>
+          <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">Class</p>
+          <p style="margin: 0.25rem 0 0 0; font-size: 1.125rem; font-weight: 600;">{{ receipt.student.student_class|default:"N/A" }}</p>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Payment Details</h3>
+      <div class="table-container" style="margin-bottom: 1.5rem;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th style="text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in receipt.items.all %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ item.description }}</td>
+              <td style="text-align: right; font-weight: 600;">${{ item.amount }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot style="background: var(--bg-secondary);">
+            <tr>
+              <td colspan="2" style="text-align: right; font-weight: 700; font-size: 1.125rem;">Total Amount:</td>
+              <td style="text-align: right; font-weight: 700; font-size: 1.25rem; color: var(--primary);">${{ receipt.total_amount }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Footer -->
+      <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+        <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+          <i class="fas fa-check-circle" style="color: var(--success);"></i>
+          This is an official receipt from EduManage School
+        </p>
+        <p style="margin: 0.5rem 0 0 0; color: var(--text-secondary); font-size: 0.75rem;">
+          Generated on {{ receipt.created_at }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@media print {
+  .sidebar, .mobile-toggle, .page-header .btn {
+    display: none !important;
+  }
+  .main {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+  .receipt-container {
+    max-width: 100% !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+  }
+}
+</style>
+{% endblock %}

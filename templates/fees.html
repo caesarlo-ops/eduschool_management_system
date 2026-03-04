@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Fees - School Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="{% url 'dashboard' %}">Home</a>
+    <i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i>
+    <span>Fees</span>
+  </div>
+  <div style="display: flex; gap: 1rem; align-items: center;">
+    <h1 class="page-title">Fee Management</h1>
+    <a href="{% url 'export_debtors' %}" class="btn btn-primary" style="white-space: nowrap;">
+      <i class="fas fa-file-excel"></i>
+      Export Debtors
+    </a>
+  </div>
+</div>
+
+<!-- Fee Payment Form -->
+<div class="content-card">
+  <div class="content-card-header">
+    <h3 class="content-card-title">
+      <i class="fas fa-money-bill-wave" style="color: var(--success);"></i>
+      Record Fee Payment
+    </h3>
+  </div>
+  <div class="content-card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Student</label>
+          {{ form.student }}
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Amount Paid ($)</label>
+          {{ form.amount_paid }}
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Total Fee ($)</label>
+          {{ form.total_fee }}
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Payment Date</label>
+          {{ form.payment_date }}
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-success" style="margin-top: 1rem;">
+        <i class="fas fa-save"></i>
+        Record Payment
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
