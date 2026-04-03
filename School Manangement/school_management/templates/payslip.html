@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Payslip - School Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="{% url 'dashboard' %}">Home</a>
+    <i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i>
+    <a href="{% url 'payroll' %}">Payroll</a>
+    <i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i>
+    <span>Payslip</span>
+  </div>
+  <h1 class="page-title">Employee Payslip</h1>
+</div>
+
+{% if employee %}
+<!-- Payslip Display -->
+<div class="content-card" id="printArea" style="border: 2px solid var(--primary);">
+  <div class="content-card-header" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white;">
+    <h3 class="content-card-title" style="color: white;">
+      <i class="fas fa-file-invoice-dollar"></i>
+      PAYSLIP
+    </h3>
+    <span style="font-size: 0.875rem;">{{ current_date }}</span>
+  </div>
+  <div class="content-card-body">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Employee Name</div>
+        <div style="font-size: 1.125rem; font-weight: 600;">{{ employee.name }}</div>
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Position</div>
+        <div style="font-size: 1.125rem; font-weight: 600;">{{ employee.position }}</div>
+      </div>
+    </div>
+    
+    <div style="background: var(--bg-light); padding: 1.5rem; border-radius: var(--radius); margin-bottom: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <span style="color: var(--text-secondary);">Base Salary</span>
+        <span style="font-weight: 600;">${{ employee.base_salary|floatformat:2 }}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <span style="color: var(--text-secondary);">Allowances</span>
+        <span style="font-weight: 600; color: var(--success);">+${{ employee.allowances|floatformat:2 }}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px dashed #cbd5e1;">
+        <span style="color: var(--text-secondary);">Deductions</span>
+        <span style="font-weight: 600; color: var(--danger);">-${{ employee.deductions|floatformat:2 }}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; font-size: 1.125rem;">Net Salary</span>
+        <span style="font-weight: 800; font-size: 1.25rem; color: var(--primary);">${{ employee.net_salary|floatformat:2 }}</span>
+      </div>
+    </div>
+    
+    <div style="text-align: center; color: var(--text-light); font-size: 0.875rem;">
+      <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+      This is a computer-generated payslip and does not require a signature.
+    </div>
+  </div>
+</div>
+
+<div style="display: flex; gap: 1rem; margin-top: 1rem;">
+  <button class="btn btn-primary" onclick="window.print()" style="flex: 1;">
+    <i class="fas fa-print"></i>
+    Print Payslip
+  </button>
+  <a href="{% url 'payroll' %}" class="btn btn-secondary" style="flex: 1; text-align: center;">
+    <i class="fas fa-arrow-left"></i>
+    Back to Payroll
+  </a>
+</div>
+{% else %}
+<!-- Search Form -->
+<div class="content-card">
+  <div class="content-card-header">
+    <h3 class="content-card-title">
+      <i class="fas fa-file-invoice-dollar" style="color: var(--success);"></i>
+      Generate Payslip
+    </h3>
+  </div>
+  <div class="content-card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Employee Name</label>
+          <input type="text" name="emp_name" class="form-input" placeholder="Enter employee name" required>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-success" style="margin-top: 1rem;">
+        <i class="fas fa-file-alt"></i>
+        Generate Payslip
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

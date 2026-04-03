@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - School Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <div class="breadcrumb">
+    <a href="{% url 'dashboard' %}">Home</a>
+    <i class="fas fa-chevron-right" style="font-size: 0.75rem;"></i>
+    <span>Dashboard</span>
+  </div>
+  <h1 class="page-title">Dashboard Overview</h1>
+</div>
+
+<!-- Stats Cards -->
+<div class="card-grid">
+  <div class="stat-card primary">
+    <div class="stat-header">
+      <div>
+        <div class="stat-value">{{ total_students }}</div>
+        <div class="stat-label">Total Students</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-user-graduate"></i>
+      </div>
+    </div>
+    <div class="stat-change positive">
+      <i class="fas fa-arrow-up"></i>
+      <span>Active Enrollment</span>
+    </div>
+  </div>
+
+  <div class="stat-card success">
+    <div class="stat-header">
+      <div>
+        <div class="stat-value">${{ revenue|floatformat:2 }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-dollar-sign"></i>
+      </div>
+    </div>
+    <div class="stat-change positive">
+      <i class="fas fa-arrow-up"></i>
+      <span>Fees Collected</span>
+    </div>
+  </div>
+
+  <div class="stat-card warning">
+    <div class="stat-header">
+      <div>
+        <div class="stat-value">{{ total_employees }}</div>
+        <div class="stat-label">Employees</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-users"></i>
+      </div>
+    </div>
+    <div class="stat-change positive">
+      <i class="fas fa-check"></i>
+      <span>Staff Members</span>
+    </div>
+  </div>
+
+  <div class="stat-card danger">
+    <div class="stat-header">
+      <div>
+        <div class="stat-value">{{ attendance_today }}</div>
+        <div class="stat-label">Attendance Today</div>
+      </div>
+      <div class="stat-icon">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+    </div>
+    <div class="stat-change positive">
+      <i class="fas fa-clock"></i>
+      <span>Marked Today</span>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="content-card" style="margin-bottom: 2rem;">
+  <div class="content-card-header">
+    <h3 class="content-card-title">
+      <i class="fas fa-bolt" style="color: var(--warning);"></i>
+      Quick Actions
+    </h3>
+  </div>
+  <div class="content-card-body">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <a href="{% url 'students' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Add Student
+      </a>
+      <a href="{% url 'attendance' %}" class="btn btn-success">
+        <i class="fas fa-check"></i>
+        Mark Attendance
+      </a>
+      <a href="{% url 'fees' %}" class="btn btn-secondary">
+        <i class="fas fa-money-bill"></i>
+        Record Payment
+      </a>
+      <a href="{% url 'payroll' %}" class="btn btn-secondary">
+        <i class="fas fa-file-invoice"></i>
+        Process Payroll
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity & Info -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+  <div class="content-card">
+    <div class="content-card-header">
+      <h3 class="content-card-title">
+        <i class="fas fa-info-circle" style="color: var(--info);"></i>
+        System Information
+      </h3>
+    </div>
+    <div class="content-card-body">
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-light); border-radius: var(--radius);">
+          <div style="width: 48px; height: 48px; background: var(--info-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--info); font-size: 1.25rem;">
+            <i class="fas fa-database"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600;">Database Status</div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">Connected to PostgreSQL</div>
+          </div>
+          <span class="badge badge-success" style="margin-left: auto;">Online</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-light); border-radius: var(--radius);">
+          <div style="width: 48px; height: 48px; background: var(--success-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--success); font-size: 1.25rem;">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div>
+            <div style="font-weight: 600;">Security</div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary);">Role-based access control</div>
+          </div>
+          <span class="badge badge-success" style="margin-left: auto;">Active</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-card">
+    <div class="content-card-header">
+      <h3 class="content-card-title">
+        <i class="fas fa-calendar-alt" style="color: var(--primary);"></i>
+        Today's Overview
+      </h3>
+    </div>
+    <div class="content-card-body">
+      <div style="text-align: center; padding: 2rem;">
+        <div style="font-size: 3rem; color: var(--primary); margin-bottom: 0.5rem;">
+          <i class="fas fa-calendar-day"></i>
+        </div>
+        <div style="font-size: 1.25rem; font-weight: 600;">{{ current_date }}</div>
+        <div style="color: var(--text-secondary); margin-top: 0.5rem;">Have a productive day!</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
